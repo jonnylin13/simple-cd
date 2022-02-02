@@ -7,7 +7,7 @@ const { exec } = require('child_process');
 fastify.register(require('fastify-cors'), {});
 fastify.register(require('fastify-raw-body'));
 
-fastify.get('/', async (request, reply) => {
+fastify.get('/simple-cd', async (request, reply) => {
   return reply.status(403).send();
 });
 
