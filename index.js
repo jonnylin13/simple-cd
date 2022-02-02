@@ -11,18 +11,26 @@ fastify.get('/', async (request, reply) => {
   return reply.status(403).send();
 });
 
-async function runBuild(body) {
-  const cfg = config.push.find(push => {
-    return push.ref === body.ref && push.name === body.repository.name;
-  });
-  if (!cfg) return false;
-  exec(`${cfg.build}`, (error, stdout, stderr) => {
-    if (error) {
-      fastify.log.error(stderr);
-      return false;
+function runBuild(body) {
+  return new Promise((resolve, reject) => {
+    const cfg = config.push.find(push => {
+      return push.ref === body.ref && push.name === body.repository.name;
+    });
+    if (!cfg) {
+      fastify.log.info('No matching configuration found');
+      resolve();
+      return;
     }
-    fastify.log.info(stdout);
-    return true;
+    exec(`${cfg.build}`, (error, stdout, stderr) => {
+      if (error) {
+        fastify.log.error(stderr);
+        reject();
+        return;
+      }
+      fastify.log.info(stdout);
+      resolve();
+      return;
+    });
   });
 }
 
@@ -35,9 +43,12 @@ fastify.post('/simple-cd', async (request, reply) => {
 
   if (signature.length !== digest.length || !crypto.timingSafeEqual(digest, signature)) return reply.status(403).send();
 
-  const result = await runBuild(request.body);
-  if (!result) return reply.status(500).send();
-  return reply.status(200).send();
+  try {
+    await runBuild(request.body);
+    return reply.status(200).send();
+  } catch {
+    return reply.status(500).send();
+  }
 });
 
 fastify.listen(process.env.PORT, process.env.ADDRESS, (err, address) => {
