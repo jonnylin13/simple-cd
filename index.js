@@ -18,8 +18,8 @@ fastify.post('/simple-cd', async (request, reply) => {
   const hmac = crypto.createHmac('sha256', process.env.SECRET);
   const digest = Buffer.from(`sha256=${hmac.update(JSON.stringify(request.body)).digest('hex')}`, 'utf-8');
 
-  console.log(signature);
-  console.log(digest);
+  console.log(signature.toString());
+  console.log(digest.toString());
 
   if (signature.length !== digest.length || !crypto.timingSafeEqual(digest, signature)) return reply.status(403).send();
 
