@@ -18,15 +18,14 @@ fastify.post('/simple-cd', async (request, reply) => {
   const hmac = crypto.createHmac('sha256', process.env.SECRET);
   const digest = Buffer.from(`sha256=${hmac.update(JSON.stringify(request.body)).digest('hex')}`, 'utf-8');
 
-  console.log(signature.toString());
-  console.log(digest.toString());
-
   if (signature.length !== digest.length || !crypto.timingSafeEqual(digest, signature)) return reply.status(403).send();
 
-  console.log(JSON.stringify(request.body, null, 2));
-  exec(`echo "This works"`);
-
-  return reply.status(200).send();
+  exec(`${config.build}`, (error) => {
+    if (error) {
+      return reply.status(500).send();
+    }
+    return reply.status(200).send();
+  });
 });
 
 fastify.listen(process.env.PORT, process.env.ADDRESS, (err, address) => {
