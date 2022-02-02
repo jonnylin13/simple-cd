@@ -13,8 +13,11 @@ fastify.get('/', async (request, reply) => {
 
 async function runBuild(body) {
   const cfg = config.push.find(push => {
+    console.log(push.ref, body.ref);
+    console.log(push.name, body.repository.name);
     return push.ref === body.ref && push.name === body.repository.name;
   });
+  console.log(cfg.name);
   if (!cfg) return false;
   exec(`${cfg.build}`, (error, stdout, stderr) => {
     if (error) {

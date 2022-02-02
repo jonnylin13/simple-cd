@@ -3,7 +3,7 @@
     {
       "ref": "refs/head/main",
       "name": "simple-cd",
-      "build": "echo \"Need to specify a build script\" && exit"
+      "build": "echo \"Need to specify a build script\" && exit 0"
     }
   ]
 }
