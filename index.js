@@ -13,11 +13,8 @@ fastify.get('/', async (request, reply) => {
 
 async function runBuild(body) {
   const cfg = config.push.find(push => {
-    console.log(push.ref, body.ref);
-    console.log(push.name, body.repository.name);
     return push.ref === body.ref && push.name === body.repository.name;
   });
-  console.log(cfg.name);
   if (!cfg) return false;
   exec(`${cfg.build}`, (error, stdout, stderr) => {
     if (error) {
@@ -37,8 +34,6 @@ fastify.post('/simple-cd', async (request, reply) => {
   const digest = Buffer.from(`sha256=${hmac.update(JSON.stringify(request.body)).digest('hex')}`, 'utf-8');
 
   if (signature.length !== digest.length || !crypto.timingSafeEqual(digest, signature)) return reply.status(403).send();
-
-  console.log(request.body);
 
   const result = await runBuild(request.body);
   if (!result) return reply.status(500).send();
