@@ -7,13 +7,16 @@ const { exec } = require('child_process');
 fastify.register(require('fastify-cors'), {});
 fastify.register(require('fastify-raw-body'));
 
+fastify.get('/', async (request, reply) => {
+  return reply.status(403).send();
+});
+
 fastify.post('/simple-cd', async (request, reply) => {
-  console.log(JSON.stringify(request.headers, null, 2));
   if (!('x-hub-signature-256' in request.headers)) return reply.status(403).send();
   const signature = Buffer.from(request.headers['x-hub-signature-256'] || '', 'utf-8');
 
   const hmac = crypto.createHmac('sha256', process.env.SECRET);
-  const digest = Buffer.from(`sha256=${hmac.update(request.rawBody).digest('hex')}`, 'utf-8');
+  const digest = Buffer.from(`sha256=${hmac.update(JSON.stringify(request.body)).digest('hex')}`, 'utf-8');
 
   console.log(signature);
   console.log(digest);
