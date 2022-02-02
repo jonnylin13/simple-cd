@@ -20,12 +20,8 @@ fastify.post('/simple-cd', async (request, reply) => {
 
   if (signature.length !== digest.length || !crypto.timingSafeEqual(digest, signature)) return reply.status(403).send();
 
-  exec(`${config.build}`, (error) => {
-    if (error) {
-      return reply.status(500).send();
-    }
-    return reply.status(200).send();
-  });
+  exec(`${config.build}`);
+  return reply.status(200).send();
 });
 
 fastify.listen(process.env.PORT, process.env.ADDRESS, (err, address) => {
