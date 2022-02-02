@@ -31,6 +31,8 @@ fastify.post('/simple-cd', async (request, reply) => {
 
   if (signature.length !== digest.length || !crypto.timingSafeEqual(digest, signature)) return reply.status(403).send();
 
+  console.log(request);
+
   const result = await runBuild();
   if (!result) return reply.status(500).send();
   return reply.status(200).send();

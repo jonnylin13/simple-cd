@@ -1,3 +1,6 @@
 {
+  "push": {
+    
+  },
   "build": "echo \"Need to specify a build script\" && exit"
 }
