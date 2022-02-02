@@ -1,0 +1,17 @@
+{
+  "name": "simple-cd",
+  "version": "1.0.0",
+  "description": "A simple Github webhook build tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jonnylin13",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^15.0.0",
+    "fastify": "^3.27.0",
+    "fastify-cors": "^6.0.2",
+    "fastify-raw-body": "^3.2.0"
+  }
+}
