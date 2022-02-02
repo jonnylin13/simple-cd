@@ -1,6 +1,9 @@
 {
-  "push": {
-    
-  },
-  "build": "echo \"Need to specify a build script\" && exit"
+  "push": [
+    {
+      "ref": "refs/head/main",
+      "name": "simple-cd",
+      "build": "echo \"Need to specify a build script\" && exit"
+    }
+  ]
 }

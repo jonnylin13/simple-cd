@@ -11,8 +11,12 @@ fastify.get('/', async (request, reply) => {
   return reply.status(403).send();
 });
 
-async function runBuild() {
-  exec(`${config.build}`, (error, stdout, stderr) => {
+async function runBuild(body) {
+  const cfg = config.push.find(push => {
+    return push.ref === body.ref && push.name === body.repository.name;
+  });
+  if (!cfg) return false;
+  exec(`${cfg.build}`, (error, stdout, stderr) => {
     if (error) {
       fastify.log.error(stderr);
       return false;
@@ -31,9 +35,9 @@ fastify.post('/simple-cd', async (request, reply) => {
 
   if (signature.length !== digest.length || !crypto.timingSafeEqual(digest, signature)) return reply.status(403).send();
 
-  console.log(request);
+  console.log(request.body);
 
-  const result = await runBuild();
+  const result = await runBuild(request.body);
   if (!result) return reply.status(500).send();
   return reply.status(200).send();
 });
