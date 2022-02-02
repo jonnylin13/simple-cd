@@ -1,7 +1,7 @@
 const fastify = require('fastify')({ logger: true });
 require('dotenv').config();
 const crypto = require('crypto');
-const config = require('config.json');
+const config = require('./config.json');
 const { exec } = require('child_process');
 
 fastify.register(require('fastify-cors'), {});
@@ -24,10 +24,10 @@ fastify.post('/github', async (request, reply) => {
   return reply.status(200).send();
 });
 
-fastify.listen(process.env.PORT, (err, address) => {
+fastify.listen(process.env.PORT, process.env.ADDRESS, (err, address) => {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
   }
-  fastify.log.info(`simple-ci server is listening on ${address}`);
+  fastify.log.info(`simple-ci server is on!`);
 })
