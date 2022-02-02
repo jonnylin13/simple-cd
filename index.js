@@ -14,8 +14,15 @@ fastify.get('/simple-cd', async (request, reply) => {
 fastify.post('/simple-cd', async (request, reply) => {
   if (!('X-Hub-Signature-256' in request.headers)) return reply.status(403).send();
   const signature = Buffer.from(request.headers['X-Hub-Signature-256'] || '', 'utf-8');
+  
   const hmac = crypto.createHmac('sha256', process.env.SECRET);
   const digest = Buffer.from(`sha256=${hmac.update(request.rawBody).digest('hex')}`, 'utf-8');
+
+  console.log(JSON.stringify(request, null, 2));
+
+  console.log(signature);
+  console.log(digest);
+
   if (signature.length !== digest.length || !crypto.timingSafeEqual(digest, signature)) return reply.status(403).send();
 
   console.log(JSON.stringify(request.body, null, 2));
